@@ -15,6 +15,19 @@ Datos de la clínica: nombre desde `Empresa`, dirección y teléfono desde `Empr
 
 Tras un envío exitoso el programa escribe `EstadoEnviado = 2` y el trigger lo deja en `3`. Si el sistema vuelve a modificar o cancelar, suma 2 y la cita vuelve a entrar en la vista correspondiente.
 
+### Trigger `Update Compromiso VI` (base de datos)
+
+En `CompromisoVI` existe el trigger `[Update Compromiso VI]`: en **cada UPDATE** toma `EstadoEnviado` de la fila insertada, le **suma 1** y lo vuelve a guardar.
+
+Por eso este bot **nunca escribe 3 directamente**:
+
+| Lo que escribe la app | Lo que deja el trigger |
+|-----------------------|-------------------------|
+| `2` | `3` (correcto: ya notificada) |
+| `3` | `4` (incorrecto: parece modificada) |
+
+Script de referencia: [`sql/Trigger_Update_Compromiso_VI.sql`](sql/Trigger_Update_Compromiso_VI.sql).
+
 ## Qué hace el ciclo
 
 1. Conecta a SQL Server.
@@ -70,6 +83,8 @@ services/emailNotificacionService.js  Envío uno a uno + ritmo anti-spam
 sql/Cnsta_Correo_CitasProgramadas.sql
 sql/Cnsta_Correo_CitasModificadas.sql
 sql/Cnsta_Correo_CitasCanceladas.sql
+sql/Update_MarcarCitasYaNotificadas.sql
+sql/Trigger_Update_Compromiso_VI.sql   Documentación del trigger (+1)
 ```
 
 ## Flujo
