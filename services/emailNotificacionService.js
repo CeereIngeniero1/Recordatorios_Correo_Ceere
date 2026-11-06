@@ -59,7 +59,7 @@ function configurarRitmo(total) {
 
 /**
  * Procesa citas y envía correos de forma progresiva (uno a uno con pausas).
- * Tras envío exitoso: EstadoEnviado = 3.
+ * Tras envío exitoso: escribe EstadoEnviado = 2 (trigger suma 1 → queda 3).
  *
  * @param {Array} citas
  * @param {'programada'|'modificada'|'cancelada'} tipoEmail

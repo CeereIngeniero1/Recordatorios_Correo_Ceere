@@ -7,7 +7,7 @@ Proyecto: correo_recordatorios (notificaciones por correo al cancelar cita)
 PROPÓSITO
 ---------
 Citas canceladas pendientes de correo (Id Estado 60 o 61) cuya cancelación
-aún no fue notificada (EstadoEnviado distinto de 3).
+aún no fue notificada (EstadoEnviado = 2 o >= 4; tras correo queda en 3).
 
 FUENTES DE DATOS
 ----------------
@@ -26,8 +26,8 @@ FILTROS
 
 ACTUALIZACIÓN DESDE LA APP
 --------------------------
-Tras envío exitoso:
-  UPDATE CompromisoVI SET EstadoEnviado = 3 WHERE [Id CompromisoVI] = @id
+Tras envío exitoso (el trigger suma 1 → queda 3):
+  UPDATE CompromisoVI SET EstadoEnviado = 2 WHERE [Id CompromisoVI] = @id
 
 INSTALACIÓN
 -----------

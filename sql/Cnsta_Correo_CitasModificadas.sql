@@ -26,8 +26,8 @@ FILTROS
 
 ACTUALIZACIÓN DESDE LA APP
 --------------------------
-Tras envío exitoso:
-  UPDATE CompromisoVI SET EstadoEnviado = 3 WHERE [Id CompromisoVI] = @id
+Tras envío exitoso (el trigger suma 1 → queda 3):
+  UPDATE CompromisoVI SET EstadoEnviado = 2 WHERE [Id CompromisoVI] = @id
 
 INSTALACIÓN
 -----------

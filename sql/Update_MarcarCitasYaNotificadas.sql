@@ -1,28 +1,26 @@
 /*
 ================================================================================
-Script: Marcar citas pendientes como YA notificadas (EstadoEnviado = 3)
+Script: Marcar citas pendientes como YA notificadas
 Proyecto: correo_recordatorios
 ================================================================================
 
 PROPÓSITO
 ---------
-Pone EstadoEnviado = 3 en todas las citas que hoy entrarían a las vistas
-de correo (programadas, modificadas o canceladas pendientes).
-
-Así, al arrancar el bot, NO reenvía el histórico: solo notificará citas
-que el sistema vuelva a marcar con EstadoEnviado = 2 o >= 4 DESPUÉS de
-ejecutar este script.
+Escribe EstadoEnviado = 2 en las citas pendientes de correo.
+Hay un TRIGGER que suma 1 → el valor final queda en 3.
+Así salen de las vistas y el bot no reenvía el histórico.
 
 EJECUCIÓN
 ---------
 1. Abrir en SSMS contra la base del cliente (ej. Laureles).
 2. Revisar el SELECT de vista previa.
 3. Si está bien, descomentar el UPDATE y ejecutarlo.
-4. Opcional: confirmar con el SELECT final.
+4. Confirmar PendientesRestantes = 0 (tras el trigger deben quedar en 3).
 
 IMPORTANTE
 ----------
-No modifica Id Estado ni fechas. Solo EstadoEnviado.
+No pongas SET EstadoEnviado = 3: el trigger sumaría 1 y quedarían en 4
+(volverían a entrar como "modificadas").
 ================================================================================
 */
 
@@ -56,16 +54,16 @@ ORDER BY
 -- ============================================================
 BEGIN TRANSACTION;
 
+-- Escribe 2; el trigger suma 1 → queda 3
 UPDATE dbo.CompromisoVI
-SET EstadoEnviado = 3
+SET EstadoEnviado = 2
 WHERE
     EstadoEnviado = 2
     OR EstadoEnviado >= 4;
 
--- Debe coincidir con el conteo de la vista previa
 SELECT @@ROWCOUNT AS FilasActualizadas;
 
--- Verificación: no deben quedar pendientes de correo
+-- Tras el trigger no deben quedar pendientes (2 o >= 4)
 SELECT COUNT(*) AS PendientesRestantes
 FROM dbo.CompromisoVI
 WHERE EstadoEnviado = 2 OR EstadoEnviado >= 4;

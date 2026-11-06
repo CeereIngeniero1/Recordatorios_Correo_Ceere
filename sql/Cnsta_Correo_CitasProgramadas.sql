@@ -19,9 +19,9 @@ FUENTES DE DATOS
 ESTADOS CompromisoVI.EstadoEnviado
 ----------------------------------
   2 = recién programada (pendiente de correo de programación)
-  3 = correo ya enviado por este programa
+  3 = correo ya enviado (este programa escribe 2; un trigger suma 1 → queda 3)
   >= 4 = modificada o cancelada pendiente de correo
-  (el sistema de citas suma 2; este programa deja 3 tras enviar)
+  (el sistema de citas suma 2; este programa escribe 2 y el trigger deja 3)
 
 COLUMNAS DEVUELTAS (consumo en Node: services/citasService.js)
 --------------------------------------------------------------
@@ -42,8 +42,8 @@ FILTROS
 
 ACTUALIZACIÓN DESDE LA APP
 --------------------------
-Tras envío exitoso:
-  UPDATE CompromisoVI SET EstadoEnviado = 3 WHERE [Id CompromisoVI] = @id
+Tras envío exitoso (el trigger suma 1 → queda 3):
+  UPDATE CompromisoVI SET EstadoEnviado = 2 WHERE [Id CompromisoVI] = @id
 
 INSTALACIÓN
 -----------

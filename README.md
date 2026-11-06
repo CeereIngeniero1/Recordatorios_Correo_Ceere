@@ -9,11 +9,11 @@ Datos de la clínica: nombre desde `Empresa`, dirección y teléfono desde `Empr
 | Valor | Significado |
 |-------|-------------|
 | `2` | Recién programada → correo de programación |
-| `3` | Correo ya enviado por este programa |
+| `3` | Correo ya enviado (el programa escribe `2`; un trigger suma 1 → queda `3`) |
 | `>= 4` | Modificada (el sistema suma 2) → correo de modificación |
 | Cancelación | `Id Estado` 60 o 61 y `EstadoEnviado` = 2 o >= 4 → correo de cancelación |
 
-Tras un envío exitoso el programa deja `EstadoEnviado = 3`. Si el sistema vuelve a modificar o cancelar, suma 2 y la cita vuelve a entrar en la vista correspondiente.
+Tras un envío exitoso el programa escribe `EstadoEnviado = 2` y el trigger lo deja en `3`. Si el sistema vuelve a modificar o cancelar, suma 2 y la cita vuelve a entrar en la vista correspondiente.
 
 ## Qué hace el ciclo
 
@@ -64,7 +64,7 @@ O `iniciar_bot.bat` en Windows.
 ```
 index.js                              Ciclo: programadas + modificadas + canceladas
 database.js                           Pool SQL
-services/citasService.js              SELECT vistas + UPDATE EstadoEnviado = 3
+services/citasService.js              SELECT vistas + UPDATE EstadoEnviado = 2 (trigger → 3)
 services/emailService.js              Plantillas HTML SMTP
 services/emailNotificacionService.js  Envío uno a uno + ritmo anti-spam
 sql/Cnsta_Correo_CitasProgramadas.sql
@@ -76,9 +76,9 @@ sql/Cnsta_Correo_CitasCanceladas.sql
 
 ```
 ciclo
-  → vista CitasProgramadas (EstadoEnviado=2) → email programada → EstadoEnviado 3
-  → vista CitasModificadas (EstadoEnviado>=4) → email modificada → EstadoEnviado 3
-  → vista CitasCanceladas (Id Estado 60/61) → email cancelada → EstadoEnviado 3
+  → vista CitasProgramadas (EstadoEnviado=2) → email programada → escribe 2 (trigger → 3)
+  → vista CitasModificadas (EstadoEnviado>=4) → email modificada → escribe 2 (trigger → 3)
+  → vista CitasCanceladas (Id Estado 60/61) → email cancelada → escribe 2 (trigger → 3)
   → espera N minutos → repetir
 ```
 

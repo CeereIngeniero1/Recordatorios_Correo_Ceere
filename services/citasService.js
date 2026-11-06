@@ -1,7 +1,11 @@
 const { getPool, sql } = require('../database');
 
-/** Tras envío exitoso: marca la cita para que salga de las vistas */
-const ESTADO_ENVIADO_MARCADO = 3;
+/**
+ * Tras envío exitoso el programa escribe 2.
+ * Hay un trigger en CompromisoVI que suma 1 → queda EstadoEnviado = 3
+ * y la cita sale de las vistas de pendiente.
+ */
+const ESTADO_ENVIADO_MARCADO = 2;
 
 /**
  * Obtiene citas pendientes de notificación por correo desde la vista SQL.
@@ -51,11 +55,11 @@ async function obtenerCitas(vista) {
 }
 
 /**
- * Marca la cita como notificada (CompromisoVI.EstadoEnviado = 3).
- * Así sale de las vistas hasta que el sistema de citas sume 2 de nuevo.
+ * Marca la cita como notificada escribiendo EstadoEnviado = 2.
+ * El trigger suma 1 y queda en 3 (sale de las vistas).
  *
  * @param {number} idCompromiso Id CompromisoVI
- * @param {number} [estado=3] Valor a guardar en EstadoEnviado
+ * @param {number} [estado=2] Valor que escribe la app (el trigger suma 1)
  */
 async function actualizarEstadoEnviado(idCompromiso, estado = ESTADO_ENVIADO_MARCADO) {
     try {
